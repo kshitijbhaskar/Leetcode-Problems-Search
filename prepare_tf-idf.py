@@ -39,9 +39,8 @@ def print_line(file_path, line_number):
         lines = file.readlines()
         if 1 <= line_number <= len(lines):
             line = lines[line_number - 1]
-            print("Index no. = ",line_number," : ",line.strip())
+            print(f"Index no. {line_number}. Question no. {line.strip()}")
 
-# Example usage
 file_path = 'index.txt'
 
 # Print the ranked questions with their line numbers
