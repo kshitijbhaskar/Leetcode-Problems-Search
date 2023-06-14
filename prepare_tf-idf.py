@@ -39,7 +39,12 @@ def print_line(file_path, line_number):
         lines = file.readlines()
         if 1 <= line_number <= len(lines):
             line = lines[line_number - 1]
-            print(f"Index no. {line_number}. Question no. {line.strip()}")
+            print(f"Question number {line.strip()}")
+    with open('Qindex.txt', 'r', encoding='latin-1') as file:
+        lines = file.readlines()
+        if 1 <= line_number <= len(lines):
+            line = lines[line_number - 1]
+            print("Link to question - ",line)
 
 file_path = 'index.txt'
 
