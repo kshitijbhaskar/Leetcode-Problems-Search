@@ -39,18 +39,19 @@ def preprocess_text(text):
     return preprocessed_line
 
 
-# Preprocess the output file
-with open(output_file, 'r', encoding='latin-1', errors='ignore') as file:
-    lines = file.readlines()
+if __name__ == "__main__":
+    # Preprocess the output file
+    with open(output_file, 'r', encoding='latin-1', errors='ignore') as file:
+        lines = file.readlines()
 
-    preprocessed_lines = []
-    for line in lines:
-        preprocessed_line = preprocess_text(line)
-        if preprocessed_line:
-            preprocessed_lines.append(preprocessed_line + '\n')
+        preprocessed_lines = []
+        for line in lines:
+            preprocessed_line = preprocess_text(line)
+            if preprocessed_line:
+                preprocessed_lines.append(preprocessed_line + '\n')
 
-# Write the preprocessed lines to a new file
-with open(preprocessed_file, 'w', encoding='latin-1') as file:
-    file.writelines(preprocessed_lines)
+    # Write the preprocessed lines to a new file
+    with open(preprocessed_file, 'w', encoding='latin-1') as file:
+        file.writelines(preprocessed_lines)
 
-print(f"Preprocessed lines have been written to {preprocessed_file}.")
+    print(f"Preprocessed lines have been written to {preprocessed_file}.")
