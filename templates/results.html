@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results for '{{ query }}'</title>
+</head>
+<body>
+    <form action="/search" method="POST">
+        <input type="text" name="query" placeholder="Enter a new query" required>
+        <button type="submit">Search</button>
+    </form>
+    <h1>Search Results</h1>
+    <p>Search query: {{ query }}</p>
+    <ul>
+        {% for result in results %}
+            <li>
+                <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a><br>
+                {{ result[2] }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
