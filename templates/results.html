@@ -1,23 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme="dark">
+
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Search Results for '{{ query }}'</title>
 </head>
-<body>
-    <form action="/search" method="POST">
-        <input type="text" name="query" placeholder="Enter a new query" required>
-        <button type="submit">Search</button>
-    </form>
-    <h1>Search Results</h1>
-    <p>Search query: {{ query }}</p>
-    <ul>
-        {% for result in results %}
-            <li>
-                <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a><br>
-                {{ result[2] }}
-            </li>
-        {% endfor %}
-    </ul>
 
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 mt-4">
+                <form action="{{ url_for('search') }}" method="POST">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="query" placeholder="Enter a new query" required>
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+                <h1 class="mt-4">Search Results</h1>
+                <p>Search query: {{ query }}</p>
+                <ul class="list-group">
+                    {% for result in results %}
+                    <li class="list-group-item">
+                        <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a><br>
+                        <div class="expandable" id="expandable{{ loop.index }}">
+                            {{ result[2] }}
+                        </div>
+                        <span class="expand-link" onclick="toggleExpand('expandable{{ loop.index }}')" id="expand-link{{ loop.index }}">
+                            {% if result[2] | length <= 100 %}
+                                {{ result[2] }}
+                            {% else %}
+                                {% if loop.index in expanded_questions %}
+                                    Show less
+                                {% else %}
+                                    Show more
+                                {% endif %}
+                            {% endif %}
+                        </span>
+                        
+
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if total_pages > 1 %}
+                <nav aria-label="Pagination">
+                    <ul class="pagination justify-content-center mt-4">
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('search', query=query, page=page-1) }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        {% if page > 3 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                        {% for p in range(start_page, end_page + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if page < total_pages - 2 %} <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('search', query=query, page=total_pages) }}">{{
+                                    total_pages }}</a>
+                            </li>
+                            {% endif %}
+                            {% if page < total_pages %} <li class="page-item">
+                                <a class="page-link" href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                                </li>
+                                {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

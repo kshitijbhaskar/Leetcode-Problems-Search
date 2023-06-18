@@ -1,0 +1,16 @@
+.expandable {
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    font-size: 14px;
+}
+
+.expandable.expanded {
+    max-height: none;
+}
+
+.expand-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
