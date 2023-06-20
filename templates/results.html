@@ -14,11 +14,11 @@
 
 <body>
     <div class="container-fluid">
-        <div class="row justify-content-center mt-4">
+        <div class="row justify-content-center mt-4 mb-4">
             <div class="d-flex justify-content-center">
                 <div style="max-width: 750px; width: 100%;">
-                    <div class="search-bar">
-                        <form action="{{ url_for('search') }}" method="POST">
+                    <div class="search-bar" style="max-width: 750px; width: 100%;">
+                        <form action="{{ url_for('search') }}" method="POST" style="max-width: 600px; width: 100%;">
                             <div class="input-group">
                                 <input type="search" class="form-control" name="query"
                                     placeholder="Search for Leetcode Questions" value="{{query}}" aria-label="Search"
@@ -60,43 +60,42 @@
                         </li>
 
                         {% endfor %}
-                    </ul>
-                    {% if total_pages > 1 %}
-                    <div id="pagination-container" style="max-width: 750px; width: 100%; overflow-x: auto; margin: 0px;">
-                        <nav aria-label="Pagination">
-                            <ul class="pagination justify-content-space-between mt-4">
-                                {% if page > 1 %}
-                                <li class="page-item">
-                                    <a class="page-link"
+                        {% if total_pages > 1 %}
+                        <div id="pagination-container" style="max-width: 750px; width: 100%; overflow-x: auto; margin: 0px;">
+                            
+                                <ul class="pagination justify-content-space-between mt-4" style="overflow-x: auto;">
+                                    {% if page > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link"
                                         href="{{ url_for('search', query=query, page=page-1) }}">Previous</a>
-                                </li>
-                                {% endif %}
-                                {% if page > 3 %}
-                                <li class="page-item">
-                                    <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
-                                </li>
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                                {% endif %}
-                                {% for p in range(start_page, end_page + 1) %}
-                                <li class="page-item {% if p == page %}active{% endif %}">
-                                    <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
-                                </li>
-                                {% endfor %}
-                                {% if page < total_pages - 2 %} <li class="page-item disabled">
-                                    <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                    {% if page > 3 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                    {% for p in range(start_page, end_page + 1) %}
+                                    <li class="page-item {% if p == page %}active{% endif %}">
+                                        <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    {% if page < total_pages - 2 %} <li class="page-item disabled">
+                                        <span class="page-link">...</span>
                                     </li>
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="{{ url_for('search', query=query, page=total_pages) }}">{{ total_pages
-                                            }}</a>
+                                        href="{{ url_for('search', query=query, page=total_pages) }}">{{ total_pages
+                                        }}</a>
                                     </li>
                                     {% endif %}
                                     {% if page < total_pages %} 
                                     <li class="page-item">
                                         <a class="page-link"
-                                            href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                                        href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
                                     </li>
                                     {% endif %}
                                     <li class="page-item page-input-item" style="font-size: 0.8rem;" title = "Enter the page number you want to visit">
@@ -106,10 +105,11 @@
                                             <button type="submit" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Go</button>
                                         </form>
                                     </li>                                    
-                            </ul>
-                        </nav>
-                    </div>
-                    {% endif %}
+                                </ul>
+                            
+                        </div>
+                        {% endif %}
+                    </ul>
 
                 </div>
             </div>
