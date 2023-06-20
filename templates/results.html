@@ -6,89 +6,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Search Results for '{{ query }}'</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 mt-4">
-                <form action="{{ url_for('search') }}" method="POST">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="query" placeholder="Enter a new query" required>
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </div>
-                </form>
-                <h1 class="mt-4">Search Results</h1>
-                <p>Search query: {{ query }}</p>
-                <ul class="list-group">
-                    {% for result in results %}
-                    <li class="list-group-item">
-                        <div class="question-title">
-                            <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a>
-                            <div class="read-buttons">
-                                <span class="read-more">Show More</span>
-                                <span class="read-less" style="display: none;">Read Less</span>
+    <div class="container-fluid">
+        <div class="row justify-content-center mt-4">
+            <div class="d-flex justify-content-center">
+                <div style="max-width: 750px; width: 100%;">
+                    <div class="search-bar">
+                        <form action="{{ url_for('search') }}" method="POST">
+                            <div class="input-group">
+                                <input type="search" class="form-control" name="query"
+                                    placeholder="Search for Leetcode Questions" value="{{query}}" aria-label="Search"
+                                    aria-describedby="search-addon" required>
+                                <button type="submit" class="btn btn-primary rounded-end">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="question-description">
-                            <p class="description-truncated">
-                                {% if result[2] | length <= 100 %}
-                                    {{ result[2] }}
-                                {% else %}
-                                    {{ result[2][:100] }}...
-                                {% endif %}
-                            </p>
-                            <p class="description-full" style="display: none;">
-                                {{ result[2] }}
-                            </p>
-                        </div>
-                        <div class="preview-container">
-                            <button class="btn btn-primary load-preview" onclick="togglePreview(this)">Load Preview</button>
-                            <button class="btn btn-secondary revert-preview" onclick="revertPreview(this)">Revert</button>
-                            <iframe class="preview-iframe"></iframe>
-                        </div>
-                    </li>                    
-                    {% endfor %}
-                </ul>
-                {% if total_pages > 1 %}
-                <nav aria-label="Pagination">
-                    <ul class="pagination justify-content-center mt-4">
-                        {% if page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('search', query=query, page=page-1) }}">Previous</a>
+                        </form>
+                    </div>
+                    <h1 class="mt-4">Search Results</h1>
+                    <p>Search query: {{ query }}</p>
+                    <ul class="list-group">
+                        {% for result in results %}
+                        <li class="list-group-item">
+                            <div class="question-title">
+                                <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a>
+                                <div class="read-buttons">
+                                    <span class="read-more">Show More</span>
+                                    <span class="read-less" style="display: none;">Show Less</span>
+                                </div>
+                            </div>
+                            <div class="question-description">
+                                <p class="description-truncated">
+                                    {% if result[2] | length <= 100 %} {{ result[2] | replace('\n', '<br>' ) | safe }}
+                                        {% else %} {{ result[2][:100] | replace('\n', '<br>' ) | safe }}... {% endif %}
+                                        </p>
+                                        <p class="description-full" style="display: none;">
+                                            {{ result[2] | replace('\n', '<br>') | safe }}
+                                        </p>
+                            </div>
+                            <div class="preview-container">
+                                <button class="btn btn-primary load-preview" onclick="togglePreview(this)">Load
+                                    Preview</button>
+                                <button class="btn btn-secondary revert-preview"
+                                    onclick="revertPreview(this)">Revert</button>
+                                <iframe class="preview-iframe"></iframe>
+                            </div>
                         </li>
-                        {% endif %}
-                        {% if page > 3 %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
-                        </li>
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
-                        {% endif %}
-                        {% for p in range(start_page, end_page + 1) %}
-                        <li class="page-item {% if p == page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
-                        </li>
+
                         {% endfor %}
-                        {% if page < total_pages - 2 %} <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('search', query=query, page=total_pages) }}">{{
-                                    total_pages }}</a>
-                            </li>
-                            {% endif %}
-                            {% if page < total_pages %} <li class="page-item">
-                                <a class="page-link" href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                    </ul>
+                    {% if total_pages > 1 %}
+                    <div id="pagination-container" style="max-width: 750px; width: 100%; overflow-x: auto; margin: 0px;">
+                        <nav aria-label="Pagination">
+                            <ul class="pagination justify-content-space-between mt-4">
+                                {% if page > 1 %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ url_for('search', query=query, page=page-1) }}">Previous</a>
                                 </li>
                                 {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
+                                {% if page > 3 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                                {% for p in range(start_page, end_page + 1) %}
+                                <li class="page-item {% if p == page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
+                                </li>
+                                {% endfor %}
+                                {% if page < total_pages - 2 %} <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="{{ url_for('search', query=query, page=total_pages) }}">{{ total_pages
+                                            }}</a>
+                                    </li>
+                                    {% endif %}
+                                    {% if page < total_pages %} 
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="page-item page-input-item" style="font-size: 0.8rem;" title = "Enter the page number you want to visit">
+                                        <form class="page-link" action="{{ url_for('search') }}" method="GET">
+                                            <input type="hidden" name="query" value="{{ query }}">
+                                            <input type="number" class="page-input" name="page" min="1" max="{{ total_pages }}" value="{{ page }}" required style="width: 36px; height: 28px; font-size: 0.8rem; padding: 0.25rem;">
+                                            <button type="submit" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Go</button>
+                                        </form>
+                                    </li>                                    
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+
+                </div>
             </div>
         </div>
     </div>
@@ -96,73 +119,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
-    <script>
-        function togglePreview(button) {
-            const listItem = button.closest('li');
-            const descriptionContainer = listItem.querySelector('.question-description');
-            const previewContainer = listItem.querySelector('.preview-container');
-            const iframeContainer = listItem.querySelector('.iframe-container');
-            const iframe = listItem.querySelector('.preview-iframe');
-
-            if (iframeContainer.style.display === 'none') {
-                descriptionContainer.style.display = 'none';
-                previewContainer.style.display = 'block';
-                iframeContainer.style.display = 'block';
-                button.innerText = 'Collapse Preview';
-
-                const url = listItem.querySelector('a').getAttribute('href');
-                iframe.src = url;
-            } else {
-                descriptionContainer.style.display = 'block';
-                previewContainer.style.display = 'none';
-                iframeContainer.style.display = 'none';
-                button.innerText = 'Load Preview';
-
-                iframe.src = '';
-            }
-        }
-
-        function revertPreview(button) {
-            const listItem = button.closest('li');
-            const descriptionContainer = listItem.querySelector('.question-description');
-            const previewContainer = listItem.querySelector('.preview-container');
-            const iframeContainer = listItem.querySelector('.iframe-container');
-            const iframe = listItem.querySelector('.preview-iframe');
-
-            descriptionContainer.style.display = 'block';
-            previewContainer.style.display = 'none';
-            iframeContainer.style.display = 'none';
-
-            iframe.src = '';
-            listItem.querySelector('.load-preview').innerText = 'Load Preview';
-        }
-
-        const readMoreButtons = document.querySelectorAll('.read-more');
-        readMoreButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                const descriptionContainer = button.closest('.question-description');
-                const descriptionTruncated = descriptionContainer.querySelector('.description-truncated');
-                const descriptionFull = descriptionContainer.querySelector('.description-full');
-                const fullDescription = button.getAttribute('data-description');
-
-                descriptionTruncated.style.display = 'none';
-                descriptionFull.style.display = 'block';
-                descriptionFull.innerText = fullDescription;
-            });
-        });
-
-        const readLessButtons = document.querySelectorAll('.read-less');
-        readLessButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                const descriptionContainer = button.closest('.question-description');
-                const descriptionTruncated = descriptionContainer.querySelector('.description-truncated');
-                const descriptionFull = descriptionContainer.querySelector('.description-full');
-
-                descriptionTruncated.style.display = 'block';
-                descriptionFull.style.display = 'none';
-            });
-        });
-    </script>
 </body>
 
 </html>

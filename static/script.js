@@ -1,5 +1,5 @@
-document.querySelectorAll('.read-more').forEach(button => {
-    button.addEventListener('click', function () {
+ document.querySelectorAll('.read-more').forEach(function(button) {
+    button.addEventListener('click', function() {
         const listItem = button.closest('.list-group-item');
         const descriptionTruncated = listItem.querySelector('.description-truncated');
         const descriptionFull = listItem.querySelector('.description-full');
@@ -10,11 +10,14 @@ document.querySelectorAll('.read-more').forEach(button => {
         descriptionFull.style.display = 'block';
         readMoreButton.style.display = 'none';
         readLessButton.style.display = 'inline';
+
+        const fullDescription = descriptionFull.innerText;
+        descriptionFull.innerHTML = fullDescription.replace(/\n/g, '<br>');
     });
 });
 
-document.querySelectorAll('.read-less').forEach(button => {
-    button.addEventListener('click', function () {
+document.querySelectorAll('.read-less').forEach(function(button) {
+    button.addEventListener('click', function() {
         const listItem = button.closest('.list-group-item');
         const descriptionTruncated = listItem.querySelector('.description-truncated');
         const descriptionFull = listItem.querySelector('.description-full');
@@ -34,50 +37,54 @@ function togglePreview(button) {
     const previewContainer = listItem.querySelector('.preview-container');
     const iframeContainer = listItem.querySelector('.iframe-container');
     const iframe = listItem.querySelector('.preview-iframe');
-  
+
     if (previewContainer.style.display === 'none') {
-      descriptionContainer.style.display = 'none';
-      previewContainer.style.display = 'block';
-      iframeContainer.style.display = 'block';
-      button.innerText = 'Collapse Preview';
-  
-      const url = listItem.querySelector('a').getAttribute('href');
-      iframe.src = url;
+        descriptionContainer.style.display = 'none';
+        previewContainer.style.display = 'block';
+        iframeContainer.style.display = 'block';
+        button.innerText = 'Collapse Preview';
+
+        const url = listItem.querySelector('a').getAttribute('href');
+        iframe.src = url;
     } else {
-      descriptionContainer.style.display = 'block';
-      previewContainer.style.display = 'none';
-      iframeContainer.style.display = 'none';
-      button.innerText = 'Load Preview';
-  
-      iframe.src = '';
+        descriptionContainer.style.display = 'block';
+        previewContainer.style.display = 'none';
+        iframeContainer.style.display = 'none';
+        button.innerText = 'Load Preview';
+
+        iframe.src = '';
     }
-  }
-  
-  
-  function revertPreview(button) {
+}
+
+function revertPreview(button) {
     const listItem = button.closest('li');
     const descriptionContainer = listItem.querySelector('.question-description');
     const previewContainer = listItem.querySelector('.preview-container');
     const iframeContainer = listItem.querySelector('.iframe-container');
     const iframe = listItem.querySelector('.preview-iframe');
-  
+
     descriptionContainer.style.display = 'block';
     previewContainer.style.display = 'none';
     iframeContainer.style.display = 'none';
-  
+
     iframe.src = '';
     listItem.querySelector('.load-preview').innerText = 'Load Preview';
-  }
-  
-  document.querySelectorAll('.load-preview').forEach(button => {
+}
+
+document.querySelectorAll('.load-preview').forEach(button => {
     button.addEventListener('click', function() {
-      togglePreview(button);
+        togglePreview(button);
     });
-  });
-  
-  document.querySelectorAll('.revert-preview').forEach(button => {
+});
+
+document.querySelectorAll('.revert-preview').forEach(button => {
     button.addEventListener('click', function() {
-      revertPreview(button);
+        revertPreview(button);
     });
-  });
-  
+});
+
+window.addEventListener('resize', function() {
+    var container = document.getElementById('pagination-container');
+    var centerOffset = (container.offsetWidth - container.firstElementChild.offsetWidth) / 2;
+    container.scrollLeft = Math.max(0, container.firstElementChild.offsetLeft - centerOffset);
+});

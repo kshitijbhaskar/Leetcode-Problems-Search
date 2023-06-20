@@ -4,19 +4,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Search Page</title>
 </head>
 <body>
-    <div class="container d-flex align-items-center justify-content-center h-100">
+    <div class="container-fluid px-0 centered-container">
         <div class="card p-4">
             <h1 class="text-center mb-4">Search Page</h1>
-            <form action="/search" method="POST">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="query" placeholder="Enter your search query" required>
-                    <button class="btn btn-primary" type="submit">Search</button>
-                </div>
-            </form>
+            <div class="search-bar">
+                <form action="{{ url_for('search') }}" method="POST">
+                  <div class="input-group">
+                    <input type="search" class="form-control" name="query" placeholder="Search for Leetcode Questions" value ="{{query}}" aria-label="Search" aria-describedby="search-addon" required >
+                    <button type="submit" class="btn btn-primary rounded-end">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </form>
+            </div>  
         </div>
     </div>
 
