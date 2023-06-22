@@ -1,44 +1,61 @@
 <!DOCTYPE html>
-<html data-bs-theme="dark">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+<html data-bs-theme="dark" lang="en">
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Search Results for '{{ query }}'</title>
 </head>
 
 <body>
     <div class="container-fluid">
-        <div class="row justify-content-center mt-4 mb-4">
-            <div class="d-flex justify-content-center">
-                <div style="max-width: 750px; width: 100%;">
-                    <div class="search-bar" style="max-width: 750px; width: 100%;">
-                        <form action="{{ url_for('search') }}" method="POST" style="max-width: 600px; width: 100%;">
-                            <div class="input-group">
-                                <input type="search" class="form-control" name="query"
-                                    placeholder="Search for Leetcode Questions" value="{{query}}" aria-label="Search"
-                                    aria-describedby="search-addon" required>
-                                <button type="submit" class="btn btn-primary rounded-end">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <h1 class="mt-4">Search Results</h1>
-                    <p>Search query: {{ query }}</p>
+        <div class="row justify-content-center" style="margin-top: 4rem;">
+            <div class="d-flex flex-column align-items-center">
+                <div class="search-bar">
+                    <nav class="navbar fixed-top bg-body-tertiary">
+                        <div class="container-fluid flex-column align-items-center">
+                          <a class="navbar-brand display-1" href="{{ url_for('home') }}">Home</a>
+                          <form action="{{ url_for('search') }}" method="POST" style="max-width: 600px; width: 100%;">
+                              <div class="input-group" style="padding: 1rem;">
+                                  <input type="search" class="form-control" name="query"
+                                  placeholder="Search for Leetcode Questions" value="{{query}}" aria-label="Search"
+                                  aria-describedby="search-addon" required>
+                                  <button type="submit" class="btn btn-primary rounded-end">
+                                      <i class="fas fa-search"></i>
+                                  </button>
+                              </div>
+                          </form>
+                          <div class="form-check form-switch" title="Toggle Dark Theme">
+                              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                              <label class="form-check-label" for="flexSwitchCheckDefault">
+                                  <i class="far fa-moon"></i>
+                              </label>
+                          </div>
+                        </div>
+                    </nav>
+                </div>
+                <div style="max-width: 850px; width: 100%;">
+                    <p class="lead" style="margin-top: 1rem;">
+                        <small class="text-body-secondary">Search Results for <em>{{ query }}</em></small>
+                    </p>
                     <ul class="list-group">
+                        {% if results == [] %}
+                        <h6>
+                            Sorry, your search <strong>{{ query }}</strong> did not match any results. Maybe try different keywords... 
+                        </h6>
+                        {% endif %}
                         {% for result in results %}
                         <li class="list-group-item">
                             <div class="question-title">
-                                <a href="{{ result[0] }}" target="_blank">{{ result[1] }}</a>
-                                <div class="read-buttons">
-                                    <span class="read-more">Show More</span>
-                                    <span class="read-less" style="display: none;">Show Less</span>
+                                <a href="{{ result[0] }}" target="_blank" style="margin-right: 2rem;">{{ result[1] }}</a>
+                                <div class="btn-group read-buttons btn-group-sm" role="group">
+                                    <button class="btn btn-outline-primary btn-xs load-preview">Load Preview</button>
+                                    <button class="btn btn-outline-secondary btn-xs read-more" style="margin-right: -0.5rem;">Show More</button>
                                 </div>
                             </div>
                             <div class="question-description">
@@ -51,18 +68,14 @@
                                         </p>
                             </div>
                             <div class="preview-container">
-                                <button class="btn btn-primary load-preview" onclick="togglePreview(this)">Load
-                                    Preview</button>
-                                <button class="btn btn-secondary revert-preview"
-                                    onclick="revertPreview(this)">Revert</button>
-                                <iframe class="preview-iframe"></iframe>
-                            </div>
+                                <iframe class="preview-iframe" src="{{ result[0] }}"></iframe>
+                                <button id="reload-preview" class="btn btn-primary reload-preview">Reload Preview</button>
+                              </div>                                                      
                         </li>
 
                         {% endfor %}
                         {% if total_pages > 1 %}
-                        <div id="pagination-container" style="max-width: 750px; width: 100%; overflow-x: auto; margin: 0px;">
-                            
+                        <div id="pagination-container" style="max-width: 850px; width: 100%; overflow-x: auto; margin-bottom: 1.5rem;">
                                 <ul class="pagination justify-content-space-between mt-4" style="overflow-x: auto;">
                                     {% if page > 1 %}
                                     <li class="page-item">
@@ -106,18 +119,17 @@
                                         </form>
                                     </li>                                    
                                 </ul>
-                            
+                                
                         </div>
                         {% endif %}
                     </ul>
-
                 </div>
             </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
 </body>
 

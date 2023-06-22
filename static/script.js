@@ -1,90 +1,75 @@
- document.querySelectorAll('.read-more').forEach(function(button) {
-    button.addEventListener('click', function() {
+document.querySelectorAll('.read-more').forEach(function (button) {
+    button.addEventListener('click', function () {
         const listItem = button.closest('.list-group-item');
         const descriptionTruncated = listItem.querySelector('.description-truncated');
         const descriptionFull = listItem.querySelector('.description-full');
-        const readMoreButton = listItem.querySelector('.read-more');
-        const readLessButton = listItem.querySelector('.read-less');
 
-        descriptionTruncated.style.display = 'none';
-        descriptionFull.style.display = 'block';
-        readMoreButton.style.display = 'none';
-        readLessButton.style.display = 'inline';
+        if (descriptionTruncated.style.display === 'none') {
+            descriptionTruncated.style.display = 'block';
+            descriptionFull.style.display = 'none';
 
-        const fullDescription = descriptionFull.innerText;
-        descriptionFull.innerHTML = fullDescription.replace(/\n/g, '<br>');
+            button.innerHTML = 'Show More';
+        }
+        else {
+            descriptionTruncated.style.display = 'none';
+            descriptionFull.style.display = 'block';
+
+            const fullDescription = descriptionFull.innerText;
+            descriptionFull.innerHTML = fullDescription.replace(/\n/g, '<br>');
+            button.innerHTML = 'Show Less';
+        }
+
     });
 });
 
-document.querySelectorAll('.read-less').forEach(function(button) {
-    button.addEventListener('click', function() {
+document.querySelectorAll('.load-preview').forEach(function (button) {
+    button.addEventListener('click', function () {
         const listItem = button.closest('.list-group-item');
-        const descriptionTruncated = listItem.querySelector('.description-truncated');
-        const descriptionFull = listItem.querySelector('.description-full');
-        const readMoreButton = listItem.querySelector('.read-more');
-        const readLessButton = listItem.querySelector('.read-less');
+        const previewContainer = listItem.querySelector('.preview-container');
+        const iframe = previewContainer.querySelector('.preview-iframe');
+        const reloadPreview = previewContainer.querySelector('.reload-preview')
 
-        descriptionTruncated.style.display = 'block';
-        descriptionFull.style.display = 'none';
-        readMoreButton.style.display = 'inline';
-        readLessButton.style.display = 'none';
+        if (iframe.style.display === '' || iframe.style.display === 'none') {
+            iframe.style.display = 'block';
+            reloadPreview.style.display = 'block';
+            button.innerHTML = 'Collapse Preview';
+        } else {
+            iframe.style.display = 'none';
+            reloadPreview.style.display = 'none';
+            button.innerHTML = 'Load Preview';
+        }
     });
 });
 
-function togglePreview(button) {
-    const listItem = button.closest('li');
-    const descriptionContainer = listItem.querySelector('.question-description');
-    const previewContainer = listItem.querySelector('.preview-container');
-    const iframeContainer = listItem.querySelector('.iframe-container');
-    const iframe = listItem.querySelector('.preview-iframe');
-
-    if (previewContainer.style.display === 'none') {
-        descriptionContainer.style.display = 'none';
-        previewContainer.style.display = 'block';
-        iframeContainer.style.display = 'block';
-        button.innerText = 'Collapse Preview';
-
-        const url = listItem.querySelector('a').getAttribute('href');
-        iframe.src = url;
-    } else {
-        descriptionContainer.style.display = 'block';
-        previewContainer.style.display = 'none';
-        iframeContainer.style.display = 'none';
-        button.innerText = 'Load Preview';
-
-        iframe.src = '';
-    }
+function reloadPreview() {
+    const iframe = this.closest('.preview-container').querySelector('.preview-iframe');
+    iframe.src = iframe.src;
 }
 
-function revertPreview(button) {
-    const listItem = button.closest('li');
-    const descriptionContainer = listItem.querySelector('.question-description');
-    const previewContainer = listItem.querySelector('.preview-container');
-    const iframeContainer = listItem.querySelector('.iframe-container');
-    const iframe = listItem.querySelector('.preview-iframe');
+document.querySelectorAll('.reload-preview').forEach(button => {
+    button.addEventListener('click', reloadPreview);
+});
 
-    descriptionContainer.style.display = 'block';
-    previewContainer.style.display = 'none';
-    iframeContainer.style.display = 'none';
+const themeSwitch = document.getElementById('flexSwitchCheckDefault');
+const htmlTag = document.querySelector('html');
 
-    iframe.src = '';
-    listItem.querySelector('.load-preview').innerText = 'Load Preview';
+const storedTheme = sessionStorage.getItem('theme');
+const currentTheme = storedTheme ? storedTheme : null;
+
+if (currentTheme === 'light') {
+  themeSwitch.checked = false;
+  htmlTag.setAttribute('data-bs-theme', 'light');
+} else {
+  themeSwitch.checked = true;
+  htmlTag.setAttribute('data-bs-theme', 'dark');
 }
 
-document.querySelectorAll('.load-preview').forEach(button => {
-    button.addEventListener('click', function() {
-        togglePreview(button);
-    });
-});
-
-document.querySelectorAll('.revert-preview').forEach(button => {
-    button.addEventListener('click', function() {
-        revertPreview(button);
-    });
-});
-
-window.addEventListener('resize', function() {
-    var container = document.getElementById('pagination-container');
-    var centerOffset = (container.offsetWidth - container.firstElementChild.offsetWidth) / 2;
-    container.scrollLeft = Math.max(0, container.firstElementChild.offsetLeft - centerOffset);
+themeSwitch.addEventListener('change', () => {
+  if (htmlTag.getAttribute('data-bs-theme') === 'light') {
+    htmlTag.setAttribute('data-bs-theme', 'dark');
+    sessionStorage.setItem('theme', 'dark');
+  } else {
+    htmlTag.setAttribute('data-bs-theme', 'light');
+    sessionStorage.setItem('theme', 'light');
+  }
 });
