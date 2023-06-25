@@ -28,6 +28,7 @@ vectorizer = TfidfVectorizer()
 tfidf_matrix = vectorizer.fit_transform(corpus)
 
 @app.route('/')
+@app.route('/home')
 def home():
     return render_template('index.html')
 
@@ -35,6 +36,9 @@ def home():
 def search():
     search_query = request.args.get('query', '') if request.method == 'GET' else request.form['query']
     page = int(request.args.get('page', 1))
+
+    # Keep unprocessed search query separately for displaying it to user 
+    user_query = search_query
 
     # Preprocess the search query using the same preprocessing steps as before
     search_query = preprocess_text(search_query)
@@ -82,7 +86,7 @@ def search():
     if end_page > total_pages:
         end_page = total_pages
 
-    return render_template('results.html', query=search_query, results=results_list, page=page, total_pages=total_pages, start_page=start_page, end_page=end_page)
+    return render_template('results.html', query=user_query, results=results_list, page=page, total_pages=total_pages, start_page=start_page, end_page=end_page)
 
 if __name__ == '__main__':
     app.run(debug=True)

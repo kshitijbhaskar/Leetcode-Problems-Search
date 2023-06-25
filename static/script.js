@@ -26,15 +26,15 @@ document.querySelectorAll('.load-preview').forEach(function (button) {
     button.addEventListener('click', function () {
         const listItem = button.closest('.list-group-item');
         const previewContainer = listItem.querySelector('.preview-container');
-        const iframe = previewContainer.querySelector('.preview-iframe');
+        const frame = previewContainer.querySelector('.preview-frame');
         const reloadPreview = previewContainer.querySelector('.reload-preview')
 
-        if (iframe.style.display === '' || iframe.style.display === 'none') {
-            iframe.style.display = 'block';
+        if (frame.style.display === '' || frame.style.display === 'none') {
+            frame.style.display = 'block';
             reloadPreview.style.display = 'block';
             button.innerHTML = 'Collapse Preview';
         } else {
-            iframe.style.display = 'none';
+            frame.style.display = 'none';
             reloadPreview.style.display = 'none';
             button.innerHTML = 'Load Preview';
         }
@@ -73,3 +73,10 @@ themeSwitch.addEventListener('change', () => {
     sessionStorage.setItem('theme', 'light');
   }
 });
+
+$(function() {
+    $('.preview-frame').resizable({
+      handles: 's',
+    });
+  });
+  

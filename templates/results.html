@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html data-bs-theme="dark" lang="en">
-    
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Search Results for '{{ query }}'</title>
 </head>
@@ -18,48 +22,53 @@
             <div class="d-flex flex-column align-items-center">
                 <div class="search-bar">
                     <nav class="navbar fixed-top bg-body-tertiary align-baseline">
-                      <div class="navbar-start">
-                        <a id="home" class="navbar-brand display-1" href="{{ url_for('home') }}">Home</a>
-                        <div class="empty-block"></div>
-                      </div>
-                      <div class="query-input" style="max-width: 600px;width: 100%; padding-top: 0.5rem;">
-                        <form action="{{ url_for('search') }}" method="POST" style="width: 100%;">
-                          <div class="input-group">
-                            <input type="search" class="form-control" name="query" placeholder="Search for Leetcode Questions" value="{{query}}" aria-label="Search" aria-describedby="search-addon" required>
-                            <button type="submit" class="btn btn-primary rounded-end">
-                              <i class="fas fa-search"></i>
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="navbar-end">
-                        <div class="empty-block"></div>
-                        <div class="form-check form-switch" title="Toggle Dark Theme">
-                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
-                          <label class="form-check-label" for="flexSwitchCheckDefault">
-                            <i class="far fa-moon"></i>
-                          </label>
+                        <div class="navbar-start">
+                            <a id="home" class="navbar-brand display-1" href="{{ url_for('home') }}">Home</a>
+                            <div class="empty-block"></div>
                         </div>
-                      </div>
+                        <div class="query-input" style="max-width: 600px;width: 100%;">
+                            <form action="{{ url_for('search') }}" method="POST" style="width: 100%;">
+                                <div class="input-group">
+                                    <input type="search" class="form-control" name="query"
+                                        placeholder="Search for Leetcode Questions" value="{{query}}"
+                                        aria-label="Search" aria-describedby="search-addon" required>
+                                    <button type="submit" class="btn btn-primary rounded-end">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="navbar-end">
+                            <div class="empty-block"></div>
+                            <div class="form-check form-switch" title="Toggle Dark Theme">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">
+                                    <i class="far fa-moon"></i>
+                                </label>
+                            </div>
+                        </div>
                     </nav>
-                  </div>
+                </div>
                 <div class="results" style="max-width: 850px; width: 100%;">
-                    <p class="lead" style="margin-top: 0.5rem;">
-                        <small class="text-body-secondary">Search Results for <em>{{ query }}</em></small>
+                    <p class="lead">
+                        <small class="text-body-secondary">Search Results for <strong style="overflow-wrap: break-word;"><em>{{ query[:150] + '...' if query|length > 150 else query }}</em></strong></small>
                     </p>
                     <ul class="list-group">
                         {% if results == [] %}
-                        <h6>
-                            Sorry, your search <strong>{{ query }}</strong> did not match any results. Maybe try different keywords... 
-                        </h6>
+                        <h7>
+                            Sorry, your search <strong style="overflow-wrap: break-word;">{{ query[:150] + '...' if query|length > 150 else query }}</strong> did not match any results. Maybe try
+                            different keywords...
+                        </h7>
                         {% endif %}
                         {% for result in results %}
                         <li class="list-group-item">
                             <div class="question-title">
-                                <a href="{{ result[0] }}" target="_blank" style="margin-right: 2rem;">{{ result[1] }}</a>
+                                <a href="{{ result[0] }}" target="_blank" style="margin-right: 2rem;">{{ result[1]}}</a>
                                 <div class="btn-group read-buttons btn-group-sm" role="group">
                                     <button class="btn btn-outline-primary btn-xs load-preview">Load Preview</button>
-                                    <button class="btn btn-outline-secondary btn-xs read-more" style="margin-right: -0.5rem;">Show More</button>
+                                    <button class="btn btn-outline-secondary btn-xs read-more"
+                                        style="margin-right: -0.5rem;">Show More</button>
                                 </div>
                             </div>
                             <div class="question-description">
@@ -72,58 +81,64 @@
                                         </p>
                             </div>
                             <div class="preview-container">
-                                <iframe class="preview-iframe" src="{{ result[0] }}"></iframe>
+                                <div class="preview-frame z-1" style="display: none;">
+                                    <iframe class="preview-iframe z-0" src="{{ result[0] }}"></iframe>
+                                </div>
                                 <button id="reload-preview" class="btn btn-primary reload-preview">Reload Preview</button>
-                              </div>                                                      
+                            </div>
                         </li>
 
                         {% endfor %}
                         {% if total_pages > 1 %}
-                        <div id="pagination-container" style="max-width: 850px; width: 100%; overflow-x: auto; margin-bottom: 1.5rem;">
-                                <ul class="pagination justify-content-space-between mt-4" style="overflow-x: auto;">
-                                    {% if page > 1 %}
-                                    <li class="page-item">
-                                        <a class="page-link"
+                        <div id="pagination-container"
+                            style="max-width: 850px; width: 100%; overflow-x: auto; margin-bottom: 1.5rem;">
+                            <ul class="pagination justify-content-space-between mt-4" style="overflow-x: auto;">
+                                {% if page > 1 %}
+                                <li class="page-item">
+                                    <a class="page-link"
                                         href="{{ url_for('search', query=query, page=page-1) }}">Previous</a>
+                                </li>
+                                {% endif %}
+                                {% if page > 3 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                                {% for p in range(start_page, end_page + 1) %}
+                                <li class="page-item {% if p == page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
+                                </li>
+                                {% endfor %}
+                                {% if page < total_pages - 2 %} <li class="page-item disabled">
+                                    <span class="page-link">...</span>
                                     </li>
-                                    {% endif %}
-                                    {% if page > 3 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('search', query=query, page=1) }}">1</a>
-                                    </li>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                    {% endif %}
-                                    {% for p in range(start_page, end_page + 1) %}
-                                    <li class="page-item {% if p == page %}active{% endif %}">
-                                        <a class="page-link" href="{{ url_for('search', query=query, page=p) }}">{{ p }}</a>
-                                    </li>
-                                    {% endfor %}
-                                    {% if page < total_pages - 2 %} <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                        href="{{ url_for('search', query=query, page=total_pages) }}">{{ total_pages
-                                        }}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if page < total_pages %} 
                                     <li class="page-item">
                                         <a class="page-link"
-                                        href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                                            href="{{ url_for('search', query=query, page=total_pages) }}">{{ total_pages
+                                            }}</a>
                                     </li>
                                     {% endif %}
-                                    <li class="page-item page-input-item" style="font-size: 0.8rem;" title = "Enter the page number you want to visit">
-                                        <form class="page-link" action="{{ url_for('search') }}" method="GET">
-                                            <input type="hidden" name="query" value="{{ query }}">
-                                            <input type="number" class="page-input" name="page" min="1" max="{{ total_pages }}" value="{{ page }}" required style="width: 36px; height: 28px; font-size: 0.8rem; padding: 0.25rem;">
-                                            <button type="submit" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Go</button>
-                                        </form>
-                                    </li>                                    
-                                </ul>
-                                
+                                    {% if page < total_pages %} <li class="page-item">
+                                        <a class="page-link"
+                                            href="{{ url_for('search', query=query, page=page+1) }}">Next</a>
+                                        </li>
+                                        {% endif %}
+                                        <li class="page-item page-input-item" style="font-size: 0.8rem;"
+                                            title="Enter the page number you want to visit">
+                                            <form class="page-link" action="{{ url_for('search') }}" method="GET">
+                                                <input type="hidden" name="query" value="{{ query }}">
+                                                <input type="number" class="page-input" name="page" min="1"
+                                                    max="{{ total_pages }}" value="{{ page }}" required
+                                                    style="width: 36px; height: 28px; font-size: 0.8rem; padding: 0.25rem;">
+                                                <button type="submit" class="btn btn-primary"
+                                                    style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Go</button>
+                                            </form>
+                                        </li>
+                            </ul>
+
                         </div>
                         {% endif %}
                     </ul>
@@ -131,10 +146,10 @@
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 
 </html>
